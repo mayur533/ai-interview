@@ -484,25 +484,89 @@ class InterviewViewSet(DataIsolationMixin, viewsets.ModelViewSet):
             raise
 
     def update(self, request, *args, **kwargs):
-        """Log interview update"""
+        """Log interview update and send email notification"""
+        # Get the interview before update to capture old data
+        interview_id = kwargs.get("pk")
+        try:
+            interview = Interview.objects.get(id=interview_id)
+            old_data = {
+                "started_at": interview.started_at,
+                "ended_at": interview.ended_at,
+                "status": interview.status,
+            }
+        except Interview.DoesNotExist:
+            old_data = None
+
         response = super().update(request, *args, **kwargs)
+        
         ActionLogger.log_user_action(
             user=request.user,
             action="interview_update",
-            details={"interview_id": kwargs.get("pk")},
+            details={"interview_id": interview_id},
             status="SUCCESS",
         )
+
+        # Send email notification to candidate when interview is updated
+        try:
+            if interview_id and response.status_code == 200:
+                interview = Interview.objects.get(id=interview_id)
+                # Only send notification if interview has a status that indicates it's scheduled
+                if interview.status in ["scheduled", "confirmed"]:
+                    NotificationService.send_candidate_interview_updated_notification(
+                        interview, old_data=old_data
+                    )
+        except Exception as e:
+            # Log notification failure but don't fail the request
+            ActionLogger.log_user_action(
+                user=request.user,
+                action="interview_update_notification_failed",
+                details={"interview_id": interview_id, "error": str(e)},
+                status="FAILED",
+            )
+
         return response
 
     def partial_update(self, request, *args, **kwargs):
-        """Log interview partial update"""
+        """Log interview partial update and send email notification"""
+        # Get the interview before update to capture old data
+        interview_id = kwargs.get("pk")
+        try:
+            interview = Interview.objects.get(id=interview_id)
+            old_data = {
+                "started_at": interview.started_at,
+                "ended_at": interview.ended_at,
+                "status": interview.status,
+            }
+        except Interview.DoesNotExist:
+            old_data = None
+
         response = super().partial_update(request, *args, **kwargs)
+        
         ActionLogger.log_user_action(
             user=request.user,
             action="interview_partial_update",
-            details={"interview_id": kwargs.get("pk")},
+            details={"interview_id": interview_id},
             status="SUCCESS",
         )
+
+        # Send email notification to candidate when interview is updated/rescheduled
+        try:
+            if interview_id and response.status_code == 200:
+                interview = Interview.objects.get(id=interview_id)
+                # Only send notification if interview has a status that indicates it's scheduled
+                if interview.status in ["scheduled", "confirmed"]:
+                    NotificationService.send_candidate_interview_updated_notification(
+                        interview, old_data=old_data
+                    )
+        except Exception as e:
+            # Log notification failure but don't fail the request
+            ActionLogger.log_user_action(
+                user=request.user,
+                action="interview_partial_update_notification_failed",
+                details={"interview_id": interview_id, "error": str(e)},
+                status="FAILED",
+            )
+
         return response
 
     def destroy(self, request, *args, **kwargs):

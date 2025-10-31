@@ -526,6 +526,296 @@ This is an automated message. Please do not reply to this email.
         return notifications
 
     @staticmethod
+    def send_candidate_interview_updated_notification(interview, old_data=None):
+        """Send notification directly to candidate when interview is updated/rescheduled"""
+        try:
+            # Get interview details
+            candidate_name = interview.candidate.full_name
+            candidate_email = interview.candidate.email
+
+            # Try to get job information from multiple sources
+            job_title = "N/A"
+            company_name = "N/A"
+
+            if interview.job:
+                job_title = interview.job.job_title
+                company_name = interview.job.company_name
+            elif (
+                hasattr(interview, "schedule")
+                and interview.schedule
+                and interview.schedule.slot.job
+            ):
+                job_title = interview.schedule.slot.job.job_title
+                company_name = interview.schedule.slot.job.company_name
+            elif interview.candidate.job:
+                job_title = interview.candidate.job.job_title
+                company_name = interview.candidate.job.company_name
+
+            # Get comprehensive slot details
+            slot_details = ""
+            scheduled_time = "TBD"
+            old_scheduled_time = "TBD"
+            duration = "TBD"
+            interview_type = "AI Interview"
+            is_rescheduled = False
+
+            # Check if time changed (rescheduled)
+            if old_data and old_data.get("started_at"):
+                old_scheduled_time = old_data["started_at"].strftime("%B %d, %Y at %I:%M %p")
+                if interview.started_at and old_data["started_at"] != interview.started_at:
+                    is_rescheduled = True
+
+            if hasattr(interview, "schedule") and interview.schedule:
+                slot = interview.schedule.slot
+                scheduled_time = slot.start_time.strftime("%B %d, %Y at %I:%M %p")
+                end_time = slot.end_time.strftime("%I:%M %p")
+                duration = f"{slot.duration_minutes} minutes"
+                interview_type = (
+                    slot.ai_interview_type.title()
+                    if slot.ai_interview_type
+                    else "AI Interview"
+                )
+
+                slot_details = f"""
+📅 **Updated Schedule:**
+• Start Time: {slot.start_time.strftime('%B %d, %Y at %I:%M %p')}
+• End Time: {slot.end_time.strftime('%B %d, %Y at %I:%M %p')}
+• Duration: {slot.duration_minutes} minutes
+• Interview Type: {slot.ai_interview_type.title() if slot.ai_interview_type else 'AI Interview'}
+• Time Zone: {slot.start_time.tzinfo}
+"""
+            elif interview.started_at and interview.ended_at:
+                scheduled_time = interview.started_at.strftime("%B %d, %Y at %I:%M %p")
+                end_time = interview.ended_at.strftime("%I:%M %p")
+                duration = f"{(interview.ended_at - interview.started_at).total_seconds() / 60:.0f} minutes"
+                interview_type = (
+                    interview.ai_interview_type.title()
+                    if interview.ai_interview_type
+                    else "AI Interview"
+                )
+
+            # Get interview link
+            interview_link = interview.interview_link
+            try:
+                interview_url = interview.get_interview_url()
+                if not interview_url:
+                    base_url = getattr(settings, "BACKEND_URL", "http://localhost:8000")
+                    session_key = (
+                        interview.session_key
+                        if interview.session_key
+                        else interview.interview_link
+                    )
+                    interview_url = f"{base_url}/interview_app/?session_key={session_key}"
+            except Exception as e:
+                logger.error(f"Failed to get interview URL: {e}")
+                base_url = getattr(settings, "BACKEND_URL", "http://localhost:8000")
+                session_key = (
+                    interview.session_key
+                    if interview.session_key
+                    else interview.interview_link
+                )
+                interview_url = f"{base_url}/interview_app/?session_key={session_key}"
+
+            # Create email subject and message
+            if is_rescheduled:
+                subject = f"Interview Rescheduled - {job_title} at {company_name}"
+                reschedule_note = f"""
+⚠️ **Important:** Your interview has been rescheduled.
+
+Previous Schedule: {old_scheduled_time}
+New Schedule: {scheduled_time}
+
+"""
+            else:
+                subject = f"Interview Updated - {job_title} at {company_name}"
+                reschedule_note = ""
+
+            message = f"""
+Dear {candidate_name},
+
+{reschedule_note}Your interview details have been updated:
+
+📋 **Interview Details:**
+• Position: {job_title}
+• Company: {company_name}
+• Date & Time: {scheduled_time}
+• Duration: {duration}
+• Interview Type: {interview_type}
+
+{slot_details}
+🔗 **Join Your Interview:**
+Click the link below to join your interview at the scheduled time:
+{interview_url if interview_url else "Your interview link will be sent separately."}
+
+⚠️ **Important Instructions:**
+• Please join the interview 5-10 minutes before the scheduled time
+• You can only access the interview link at the scheduled date and time
+• The link will be active 15 minutes before the interview starts
+• Make sure you have a stable internet connection and a quiet environment
+• Ensure your camera and microphone are working properly
+• Have a valid government-issued ID ready for verification
+
+📧 **Contact Information:**
+If you have any questions or need to reschedule, please contact your recruiter.
+
+Best regards,
+{company_name} Recruitment Team
+
+---
+This is an automated message. Please do not reply to this email.
+            """
+
+            # Send email to candidate
+            from django.core.mail import send_mail
+
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[candidate_email],
+                    fail_silently=False,
+                )
+                logger.info(f"Interview update notification sent via email: {candidate_email}")
+            except Exception as email_error:
+                logger.warning(
+                    f"SMTP email failed, falling back to console: {email_error}"
+                )
+                try:
+                    from django.core.mail import get_connection
+                    connection = get_connection(
+                        backend="django.core.mail.backends.console.EmailBackend"
+                    )
+                    send_mail(
+                        subject=subject,
+                        message=message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[candidate_email],
+                        fail_silently=False,
+                        connection=connection,
+                    )
+                    logger.info(
+                        f"Interview update notification sent to console (fallback mode): {candidate_email}"
+                    )
+                except Exception as console_error:
+                    logger.error(f"Both SMTP and console email failed: {console_error}")
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send interview update notification: {e}")
+            return False
+
+    @staticmethod
+    def send_candidate_welcome_notification(candidate):
+        """Send welcome email to candidate when they are added to the system"""
+        try:
+            candidate_name = candidate.full_name or "Candidate"
+            candidate_email = candidate.email
+
+            if not candidate_email:
+                logger.warning(f"Cannot send welcome email: candidate {candidate.id} has no email")
+                return False
+
+            # Get company/recruiter information
+            company_name = "Our Company"
+            recruiter_name = "Your Recruiter"
+            recruiter_email = None
+
+            if candidate.recruiter:
+                recruiter_name = candidate.recruiter.full_name or candidate.recruiter.username
+                recruiter_email = candidate.recruiter.email
+                if hasattr(candidate.recruiter, "company_name") and candidate.recruiter.company_name:
+                    company_name = candidate.recruiter.company_name
+
+            if candidate.job and candidate.job.company_name:
+                company_name = candidate.job.company_name
+
+            # Get domain and role information
+            domain = candidate.domain or "Technology"
+            role = candidate.jobRole if hasattr(candidate, "jobRole") and candidate.jobRole else (
+                candidate.job.job_title if candidate.job else "Position"
+            )
+
+            # Create email subject and message
+            subject = f"Welcome to {company_name} - Your Profile Has Been Added"
+
+            message = f"""
+Dear {candidate_name},
+
+Welcome! Your profile has been successfully added to our recruitment system.
+
+📋 **Your Profile Details:**
+• Domain: {domain}
+• Position: {role}
+• Email: {candidate_email}
+• Phone: {candidate.phone or "Not provided"}
+
+🎯 **What Happens Next?**
+1. Our recruitment team will review your profile
+2. If your profile matches our requirements, we'll contact you for the next steps
+3. You may be invited for an interview if selected
+
+📧 **Your Recruiter:**
+• Name: {recruiter_name}
+{f"• Email: {recruiter_email}" if recruiter_email else ""}
+
+💡 **Stay Connected:**
+• Keep an eye on your email for updates
+• Ensure your contact information is up to date
+• Be ready to respond when we reach out
+
+We're excited to have you as part of our talent pool. We look forward to connecting with you soon!
+
+Best regards,
+{company_name} Recruitment Team
+
+---
+This is an automated message. Please do not reply to this email.
+            """
+
+            # Send email to candidate
+            from django.core.mail import send_mail
+
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[candidate_email],
+                    fail_silently=False,
+                )
+                logger.info(f"Welcome email sent to candidate: {candidate_email}")
+            except Exception as email_error:
+                logger.warning(
+                    f"SMTP welcome email failed, falling back to console: {email_error}"
+                )
+                try:
+                    from django.core.mail import get_connection
+                    connection = get_connection(
+                        backend="django.core.mail.backends.console.EmailBackend"
+                    )
+                    send_mail(
+                        subject=subject,
+                        message=message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[candidate_email],
+                        fail_silently=False,
+                        connection=connection,
+                    )
+                    logger.info(
+                        f"Welcome email sent to console (fallback mode): {candidate_email}"
+                    )
+                except Exception as console_error:
+                    logger.error(f"Both SMTP and console welcome email failed: {console_error}")
+
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send candidate welcome email: {e}")
+            return False
+
+    @staticmethod
     def mark_notification_as_read(notification_id, user):
         """Mark a notification as read"""
         try:

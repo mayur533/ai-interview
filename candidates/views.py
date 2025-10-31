@@ -504,6 +504,19 @@ class BulkCandidateCreationView(APIView):
                 candidate.save()
             except Job.DoesNotExist:
                 pass
+
+            # Send welcome email to candidate
+            try:
+                NotificationService.send_candidate_welcome_notification(candidate)
+            except Exception as e:
+                # Log welcome email failure but don't fail the candidate creation
+                ActionLogger.log_user_action(
+                    user=user,
+                    action="candidate_welcome_email_failed",
+                    details={"candidate_id": candidate.id, "error": str(e)},
+                    status="FAILED",
+                )
+
             return candidate
         except Exception as e:
             ActionLogger.log_user_action(
@@ -557,6 +570,18 @@ class BulkCandidateCreationView(APIView):
                 candidate.save()
             except Job.DoesNotExist:
                 pass  # Job not found, candidate created without job association
+
+            # Send welcome email to candidate
+            try:
+                NotificationService.send_candidate_welcome_notification(candidate)
+            except Exception as e:
+                # Log welcome email failure but don't fail the candidate creation
+                ActionLogger.log_user_action(
+                    user=user,
+                    action="candidate_welcome_email_failed",
+                    details={"candidate_id": candidate.id, "error": str(e)},
+                    status="FAILED",
+                )
 
             return candidate
 
@@ -865,6 +890,18 @@ class CandidateSubmissionView(APIView):
                 candidate, request.user
             )
 
+            # Send welcome email to candidate
+            try:
+                NotificationService.send_candidate_welcome_notification(candidate)
+            except Exception as e:
+                # Log welcome email failure but don't fail the request
+                ActionLogger.log_user_action(
+                    user=request.user,
+                    action="candidate_welcome_email_failed",
+                    details={"candidate_id": candidate.id, "error": str(e)},
+                    status="FAILED",
+                )
+
             return Response(
                 {
                     "message": "Candidate submitted successfully",
@@ -933,14 +970,32 @@ class CandidateListCreateView(DataIsolationMixin, generics.ListCreateAPIView):
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        """Log candidate creation"""
+        """Log candidate creation and send welcome email"""
+        response = super().create(request, *args, **kwargs)
+        
         ActionLogger.log_user_action(
             user=request.user,
             action="candidate_create",
-            details={"method": "legacy_direct_creation"},
+            details={"method": "legacy_direct_creation", "candidate_id": response.data.get("id")},
             status="SUCCESS",
         )
-        return super().create(request, *args, **kwargs)
+
+        # Send welcome email to candidate when created via legacy endpoint
+        try:
+            candidate_id = response.data.get("id")
+            if candidate_id:
+                candidate = Candidate.objects.get(id=candidate_id)
+                NotificationService.send_candidate_welcome_notification(candidate)
+        except Exception as e:
+            # Log welcome email failure but don't fail the request
+            ActionLogger.log_user_action(
+                user=request.user,
+                action="candidate_welcome_email_failed",
+                details={"candidate_id": response.data.get("id"), "error": str(e)},
+                status="FAILED",
+            )
+
+        return response
 
 
 class CandidateDetailView(DataIsolationMixin, generics.RetrieveUpdateDestroyAPIView):

@@ -34,6 +34,7 @@ from .serializers import (
 )
 from .services import ai_interview_service
 from interviews.models import Interview
+from evaluation.models import Evaluation
 
 # Import existing AI model components (temporarily disabled for testing)
 # from ai_platform.interview_app.camera import VideoCamera
@@ -653,10 +654,24 @@ class PublicCompleteInterviewView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+            # Get all responses for evaluation (before marking completed to calculate completion time)
+            responses = AIInterviewResponse.objects.filter(
+                session=session
+            ).select_related("question")
+            total_responses = responses.count()
+            total_questions = AIInterviewQuestion.objects.filter(
+                session=session
+            ).count()
+
             # Mark session as completed
             session.status = "COMPLETED"
             session.completed_at = timezone.now()
             session.save()
+
+            # Create Q&A text for evaluation (needed outside try block)
+            qa_text = ""
+            for response in responses:
+                qa_text += f"Question: {response.question.question_text}\nAnswer: {response.response_text or response.transcribed_text or 'No answer'}\n\n"
 
             # Generate AI evaluation using the actual AI model
             try:
@@ -665,20 +680,6 @@ class PublicCompleteInterviewView(APIView):
                 gemini_api_key = "AIzaSyBXhqoQx3maTEJNdGH6xo3ULX1wL1LFPOc"
                 genai.configure(api_key=gemini_api_key)
                 model = genai.GenerativeModel("gemini-1.5-flash-latest")
-
-                # Get all responses for evaluation
-                responses = AIInterviewResponse.objects.filter(
-                    session=session
-                ).select_related("question")
-                total_responses = responses.count()
-                total_questions = AIInterviewQuestion.objects.filter(
-                    session=session
-                ).count()
-
-                # Create evaluation prompt
-                qa_text = ""
-                for response in responses:
-                    qa_text += f"Question: {response.question.question_text}\nAnswer: {response.response_text}\n\n"
 
                 evaluation_prompt = f"""
                 You are an expert Talaro interviewer evaluating a candidate's performance. 
@@ -756,17 +757,148 @@ class PublicCompleteInterviewView(APIView):
 
             except Exception as e:
                 logger.error(f"Error generating AI evaluation: {e}")
-                total_responses = AIInterviewResponse.objects.filter(
-                    session=session
-                ).count()
-                total_questions = AIInterviewQuestion.objects.filter(
-                    session=session
-                ).count()
+                # Use already fetched values
                 evaluation = f"Interview completed successfully. You answered {total_responses} out of {total_questions} questions."
                 score = min(100, int((total_responses / max(total_questions, 1)) * 100))
                 strengths = "Good participation in the interview."
                 areas_for_improvement = "Continue developing your skills."
                 recommendation = "Yes"
+                # Set default model for section scores calculation
+                try:
+                    import google.generativeai as genai
+                    gemini_api_key = "AIzaSyBXhqoQx3maTEJNdGH6xo3ULX1wL1LFPOc"
+                    genai.configure(api_key=gemini_api_key)
+                    model = genai.GenerativeModel("gemini-1.5-flash-latest")
+                except:
+                    model = None
+
+            # Calculate metrics from responses
+            responses_list = list(responses)
+            total_response_time = sum(r.response_duration for r in responses_list if r.response_duration)
+            avg_response_time = (total_response_time / len(responses_list)) if responses_list else 0
+            
+            # Calculate completion time
+            completion_time = 0
+            if session.created_at:
+                end_time = session.completed_at or timezone.now()
+                completion_time = int((end_time - session.created_at).total_seconds())
+            
+            # Calculate correct answers (responses with ai_score > 70 or positive feedback)
+            questions_correct = sum(
+                1 for r in responses_list 
+                if (r.ai_score and r.ai_score > 70) or 
+                   (r.ai_feedback and len(r.ai_feedback) > 20)
+            )
+
+            # Get section scores from AI or calculate from question types
+            # Request detailed section scores from AI
+            try:
+                if model and 'qa_text' in locals():
+                    section_scores_prompt = f"""
+                    Based on the interview performance, provide scores for each category on a scale of 0-10:
+                    
+                    Questions and Answers:
+                    {qa_text}
+                    
+                    Provide scores as:
+                    Technical: [0-10]
+                    Behavioral: [0-10]
+                    Coding: [0-10]
+                    Communication: [0-10]
+                    Problem Solving: [0-10]
+                    """
+                    section_response = model.generate_content(section_scores_prompt)
+                    section_text = section_response.text
+                    
+                    technical_score = float(re.search(r"Technical:\s*(\d+\.?\d*)", section_text).group(1)) if re.search(r"Technical:\s*(\d+\.?\d*)", section_text) else score / 10
+                    behavioral_score = float(re.search(r"Behavioral:\s*(\d+\.?\d*)", section_text).group(1)) if re.search(r"Behavioral:\s*(\d+\.?\d*)", section_text) else score / 10
+                    coding_score = float(re.search(r"Coding:\s*(\d+\.?\d*)", section_text).group(1)) if re.search(r"Coding:\s*(\d+\.?\d*)", section_text) else score / 10
+                    communication_score = float(re.search(r"Communication:\s*(\d+\.?\d*)", section_text).group(1)) if re.search(r"Communication:\s*(\d+\.?\d*)", section_text) else score / 10
+                    problem_solving_score = float(re.search(r"Problem Solving:\s*(\d+\.?\d*)", section_text).group(1)) if re.search(r"Problem Solving:\s*(\d+\.?\d*)", section_text) else score / 10
+                else:
+                    raise Exception("Model not available")
+            except Exception as e:
+                logger.warning(f"Error getting section scores from AI: {e}")
+                # Fallback: calculate from score
+                technical_score = behavioral_score = coding_score = communication_score = problem_solving_score = score / 10
+
+            # Determine overall rating from score
+            if score >= 90:
+                overall_rating = "excellent"
+            elif score >= 75:
+                overall_rating = "good"
+            elif score >= 60:
+                overall_rating = "average"
+            else:
+                overall_rating = "poor"
+
+            # Determine hire recommendation
+            hire_recommendation = recommendation.lower() in ["strong yes", "yes"]
+            
+            # Parse strengths and weaknesses into lists
+            strengths_list = [s.strip() for s in strengths.split(',') if s.strip()] if strengths else []
+            weaknesses_list = [w.strip() for w in areas_for_improvement.split(',') if w.strip()] if areas_for_improvement else []
+
+            # Create or update AIInterviewResult
+            ai_result, created = AIInterviewResult.objects.update_or_create(
+                interview=session.interview,
+                defaults={
+                    'session': session,
+                    'total_score': score / 10,  # Convert 0-100 to 0-10 scale
+                    'technical_score': technical_score,
+                    'behavioral_score': behavioral_score,
+                    'coding_score': coding_score,
+                    'communication_score': communication_score,
+                    'problem_solving_score': problem_solving_score,
+                    'questions_attempted': total_responses,
+                    'questions_correct': questions_correct,
+                    'average_response_time': avg_response_time,
+                    'completion_time': completion_time,
+                    'ai_summary': evaluation,
+                    'ai_recommendations': recommendation,
+                    'strengths': strengths_list,
+                    'weaknesses': weaknesses_list,
+                    'overall_rating': overall_rating,
+                    'hire_recommendation': hire_recommendation,
+                    'confidence_level': min(10, (score / 10)),  # Convert to 0-10 scale
+                }
+            )
+
+            # Prepare detailed evaluation data for Evaluation.details
+            evaluation_details = {
+                "total_questions": total_questions,
+                "questions_attempted": total_responses,
+                "questions_correct": questions_correct,
+                "accuracy": (questions_correct / max(total_responses, 1)) * 100,
+                "average_response_time": avg_response_time,
+                "completion_time": completion_time,
+                "section_scores": {
+                    "technical": technical_score,
+                    "behavioral": behavioral_score,
+                    "coding": coding_score,
+                    "communication": communication_score,
+                    "problem_solving": problem_solving_score,
+                },
+                "overall_rating": overall_rating,
+                "ai_summary": evaluation,
+                "ai_recommendations": recommendation,
+                "strengths": strengths_list,
+                "weaknesses": weaknesses_list,
+                "hire_recommendation": recommendation,
+            }
+
+            # Create or update Evaluation record
+            evaluation_record, eval_created = Evaluation.objects.update_or_create(
+                interview=session.interview,
+                defaults={
+                    'overall_score': score,  # Keep 0-100 scale
+                    'traits': ', '.join(strengths_list) if strengths_list else strengths,
+                    'suggestions': areas_for_improvement,
+                    'details': evaluation_details,
+                }
+            )
+
+            logger.info(f"Saved AI evaluation for interview {session.interview.id}: AIResult={created}, Evaluation={eval_created}")
 
             return Response(
                 {
@@ -1225,10 +1357,12 @@ class AIInterviewQuestionListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        session_id = self.kwargs.get("session_id")
-        return AIInterviewQuestion.objects.filter(session_id=session_id).order_by(
-            "question_index"
-        )
+        session_id = self.request.query_params.get("session_id") or self.kwargs.get("session_id")
+        if session_id:
+            return AIInterviewQuestion.objects.filter(session_id=session_id).order_by(
+                "question_index"
+            )
+        return AIInterviewQuestion.objects.none()
 
 
 class AIInterviewResponseListView(generics.ListAPIView):
@@ -1238,10 +1372,12 @@ class AIInterviewResponseListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        session_id = self.kwargs.get("session_id")
-        return AIInterviewResponse.objects.filter(session_id=session_id).order_by(
-            "response_time"
-        )
+        session_id = self.request.query_params.get("session_id") or self.kwargs.get("session_id")
+        if session_id:
+            return AIInterviewResponse.objects.filter(session_id=session_id).select_related("question").order_by(
+                "response_submitted_at"
+            )
+        return AIInterviewResponse.objects.none()
 
 
 class AIInterviewResultDetailView(generics.RetrieveAPIView):
