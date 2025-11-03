@@ -252,8 +252,14 @@ const CandidatePage = () => {
   };
 
   const handleTabClick = (tab) => {
+    const newStatus = tab === "All" ? "" : tab;
     setActiveTab(tab);
-    setFilters(prev => ({ ...prev, status: tab === "All" ? "" : tab }));
+    const updatedFilters = { ...filters, status: newStatus };
+    setFilters(updatedFilters);
+    // Apply filters immediately
+    setAppliedFilters(updatedFilters);
+    setAppliedTab(tab);
+    setCurrentPage(1);
   };
 
   const handleApplyFilters = () => {
@@ -526,16 +532,6 @@ const CandidatePage = () => {
 
         <div className="candidate-details-section card slide-in-right">
           <div className="candidate-status-tabs-container desktop-only">
-            <div className="status-tabs-header">
-              <h3 className="status-tabs-title">Status Filters</h3>
-              <button 
-                className="edit-tabs-btn"
-                onClick={toggleEditing}
-                title={isEditing ? "Exit Edit Mode" : "Edit Status Tabs"}
-              >
-                {isEditing ? "Done" : "Edit"}
-              </button>
-            </div>
             <div className="status-tabs-list">
               {candidateTabsStatusList.map((tab) => (
                 <div

@@ -24,30 +24,42 @@
 
 /* New Status Tabs Container */
 .candidate-status-tabs-container {
-  display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping to keep tabs in single row */
-  gap: 8px; /* Increased space between tabs for better touch targets */
-  margin-bottom: 1rem; /* Reduced space below tabs */
-  border-bottom: 1px solid var(--color-border); /* Subtle separator */
-  padding-bottom: 12px; /* Increased padding below separator */
-  height: 150px; /* Further increased height to 150px */
-  min-height: 0; /* Allow flex to shrink */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  overflow-y: hidden; /* Disable vertical scrolling */
-  align-items: center; /* Center tabs vertically */
+  width: 100%;
+  margin: 0.5rem 0 1rem 0; /* Add top margin for spacing */
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 0 12px 0; /* Increased top/bottom padding for better visibility */
+  min-height: 60px; /* Minimum height to ensure tabs show correctly */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin; /* Firefox scrollbar */
+  scrollbar-color: var(--color-muted) var(--color-bg-secondary);
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
 }
 
-/* Hide scrollbar for status tabs */
+/* Show thin scrollbar for status tabs container */
 .candidate-status-tabs-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for WebKit browsers */
+  height: 8px; /* Thin horizontal scrollbar */
 }
 
-/* Status tabs header - mobile only */
+.candidate-status-tabs-container::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.candidate-status-tabs-container::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 4px;
+}
+
+.candidate-status-tabs-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Firefox scrollbar - merged with main container styles */
+
+/* Status tabs header */
 .status-tabs-header {
-  display: none; /* Hidden on desktop */
+  display: flex; /* Show on desktop */
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
@@ -88,16 +100,11 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
   padding: 0.5rem 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.status-tabs-list::-webkit-scrollbar {
-  display: none;
+  width: max-content; /* Allow container to be wider than parent */
+  min-width: 100%; /* At least full width */
+  align-items: center; /* Center tabs vertically */
+  min-height: 40px; /* Minimum height for proper display */
 }
 
 .status-tab {
@@ -149,7 +156,7 @@
   border: 1px solid var(--color-border); /* Match form and table border */
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft); /* Match form shadow */
-  padding: 1.5rem; /* Reduced padding to fit more content */
+  padding: 1rem 2rem 2rem 2rem; /* Reduced top padding, keep other sides at 2rem */
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -163,7 +170,6 @@
   max-width: 100%;
   min-width: 0; /* Allow flex to shrink */
   box-sizing: border-box;
-  contain: layout; /* Prevent content from affecting parent sizing */
 }
 
 /* Removed gradient shimmer effect for cleaner appearance */
@@ -252,6 +258,7 @@ body[data-theme='light'] .filter-sidebar-section:hover {
 }
 
 .candidate-list {
+  padding: 0; /* Reset any default padding */
   display: grid; /* Changed from flex to grid */
   grid-template-columns: 1fr; /* Full width cards */
   gap: 1rem; /* Reduced space between cards */
