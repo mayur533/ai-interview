@@ -1,0 +1,257 @@
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/App.jsx
+    2:31  error  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   87:9   error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  320:28  error  'process' is not defined                                                              no-undef
+  414:24  error  'process' is not defined                                                              no-undef
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/ActionMenu.jsx
+  22:6  error  'props' is defined but never used  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/CandidateDetails.jsx
+    26:14  error    'e' is defined but never used                                                                                                                       no-unused-vars
+   300:9   error    'availableActions' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                    no-unused-vars
+   655:6   warning  React Hook useEffect has missing dependencies: 'candidate.last_updated' and 'candidate.status'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   661:6   warning  React Hook useEffect has a missing dependency: 'fetchInterviews'. Either include it or remove the dependency array                                  react-hooks/exhaustive-deps
+  1278:40  error    'index' is defined but never used                                                                                                                   no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/CandidateDetails_old.jsx
+  214:3  error  Parsing error: 'return' outside of function
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Candidates.jsx
+    6:10  error    'baseURL' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                  no-unused-vars
+    7:10  error    'updateCandidateStatus' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+  231:6   warning  React Hook useMemo has a missing dependency: 'getDomainName'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  236:6   warning  React Hook useMemo has a missing dependency: 'getJobTitle'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  290:11  error    'lowerCaseSearchTerm' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+  291:11  error    'lowerCaseCandidateName' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  292:11  error    'lowerCaseCandidateEmail' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  293:11  error    'lowerCaseCandidateDomainName' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+  294:11  error    'lowerCaseCandidateJobTitle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Header.jsx
+  126:20  error  'fetchError' is defined but never used  no-unused-vars
+  147:16  error  'error' is defined but never used       no-unused-vars
+  298:46  error  'index' is defined but never used       no-unused-vars
+  352:48  error  'index' is defined but never used       no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/HiringAgency.jsx
+    32:7   error    'formInputFocusStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+    61:7   error    'saveButtonStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+    76:7   error    'cancelButtonStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+    92:7   error    'buttonContainerStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+   212:10  error    'permissionError' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+   247:53  error    'rowIndex' is defined but never used                                                                                no-unused-vars
+   290:9   error    'roleOptions' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                         no-unused-vars
+   307:6   warning  React Hook useEffect has a missing dependency: 'handleTabChange'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   343:16  error    'e' is defined but never used                                                                                       no-unused-vars
+   347:6   warning  React Hook useEffect has a missing dependency: 'handleTabChange'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   579:16  error    'error' is defined but never used                                                                                   no-unused-vars
+   603:9   error    Unexpected lexical declaration in case block                                                                        no-case-declarations
+   622:9   error    Unexpected lexical declaration in case block                                                                        no-case-declarations
+   629:9   error    Unexpected lexical declaration in case block                                                                        no-case-declarations
+   657:26  error    Empty block statement                                                                                               no-empty
+   832:9   error    Unexpected lexical declaration in case block                                                                        no-case-declarations
+   931:18  error    'parseError' is defined but never used                                                                              no-unused-vars
+  1381:9   error    'handleSort' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                          no-unused-vars
+  1390:9   error    'getSortIndicator' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+  1741:9   error    'getTableHeaders' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  1765:9   error    'renderTableRows' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  2147:37  error    'rowIndex' is defined but never used                                                                                no-unused-vars
+  2193:20  error    'error' is defined but never used                                                                                   no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/InterviewComplete.jsx
+  7:43  error  'onClose' is defined but never used  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/InterviewIdVerification.jsx
+   6:36  error    'sessionData' is defined but never used                                                                         no-unused-vars
+   6:61  error    'onError' is defined but never used                                                                             no-unused-vars
+   9:10  error    'cameraReady' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  26:6   warning  React Hook useEffect has a missing dependency: 'mediaStream'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  90:13  error    'photoBlob' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                       no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/InterviewPortal.jsx
+   13:9   error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  108:14  error  'err' is defined but never used                                                           no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/InterviewResults.jsx
+  10:9  error    'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                  no-unused-vars
+  20:6  warning  React Hook useEffect has a missing dependency: 'fetchInterviewResults'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/InterviewSession.jsx
+  27:6   warning  React Hook useEffect has a missing dependency: 'initializeInterview'. Either include it or remove the dependency array                                                                                                                                                         react-hooks/exhaustive-deps
+  36:25  warning  The ref value 'audioContextRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioContextRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Jobs.jsx
+     2:27  error  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                no-unused-vars
+    30:9   error  'jobsError' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+    31:9   error  'domainsError' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   424:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   427:7   error  'setShowMessage' is not defined                                                                              no-undef
+   435:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   438:7   error  'setShowMessage' is not defined                                                                              no-undef
+   442:5   error  'setErrorMessage' is not defined                                                                             no-undef
+   486:18  error  'parseError' is defined but never used                                                                       no-unused-vars
+   495:9   error  'setShowMessage' is not defined                                                                              no-undef
+   499:9   error  'setShowMessage' is not defined                                                                              no-undef
+   518:9   error  'setShowMessage' is not defined                                                                              no-undef
+   521:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   522:7   error  'setShowMessage' is not defined                                                                              no-undef
+   528:9   error  'handleEditClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   533:9   error  'handleEditCellChange' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+   538:9   error  'handleSaveClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   541:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   544:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   569:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   577:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   623:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   632:9   error  'handleCancelClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+   637:9   error  'handleViewJob' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+   643:9   error  'handleEditJob' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+   661:5   error  'setShowMessage' is not defined                                                                              no-undef
+   662:5   error  'setErrorMessage' is not defined                                                                             no-undef
+   665:9   error  'handleDeleteClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+   675:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   702:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   722:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   743:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   754:7   error  'setErrorMessage' is not defined                                                                             no-undef
+   808:9   error  'setErrorMessage' is not defined                                                                             no-undef
+   816:9   error  'handleSort' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+   825:9   error  'getSortIndicator' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+   881:9   error  'isAnyJobOperationInProgress' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   887:10  error  'selectedRows' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   889:10  error  'actionMenuId' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                 no-unused-vars
+   891:9   error  'toggleRowSelection' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u           no-unused-vars
+   897:9   error  'toggleSelectAll' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   906:9   error  'toggleActionMenu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+  1202:25  error  'setShowMessage' is not defined                                                                              no-undef
+  1203:25  error  'setErrorMessage' is not defined                                                                             no-undef
+  1370:41  error  'rowIndex' is defined but never used                                                                         no-unused-vars
+  1394:24  error  'error' is defined but never used                                                                            no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Login.jsx
+  65:18  error  'jsonError' is defined but never used  no-unused-vars
+  69:14  error  'err' is defined but never used        no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Registration.jsx
+  50:15  error  'data' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  66:14  error  'err' is defined but never used                                                       no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/Settings.jsx
+  11:11  error  'theme' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                         no-unused-vars
+  35:9   error  'handleDataExportFormatChange' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  39:9   error  'handleDefaultJobStatusChange' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/TimeSlotPicker.jsx
+    6:10  error    'formatTimeTo12Hour' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                           no-unused-vars
+   13:3   error    'isBooking' is assigned a value but never used                                                                                                                                                                                                                                      no-unused-vars
+   14:3   error    'setIsBooking' is assigned a value but never used                                                                                                                                                                                                                                   no-unused-vars
+   17:3   error    'aiInterviewType' is assigned a value but never used                                                                                                                                                                                                                                no-unused-vars
+   27:10  error    'allSlotsInternal' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                    no-unused-vars
+   68:9   error    'allTimeSlots' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                        no-unused-vars
+  284:6   warning  React Hook useCallback has missing dependencies: 'notify', 'onAllSlotsChange', and 'onAvailableSlotsChange'. Either include them or remove the dependency array. Outer scope values like 'baseURL' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  317:9   error    'bookSlot' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                            no-unused-vars
+  462:9   error    'releaseSlot' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                         no-unused-vars
+  487:13  error    'maxCandidates' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                       no-unused-vars
+  555:9   error    'createSlot' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                          no-unused-vars
+  583:9   error    'updateSlot' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                          no-unused-vars
+  614:9   error    'deleteSlot' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                          no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/common/ContextMenu.jsx
+  1:17  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/common/DataTable.jsx
+    70:14  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   113:5   error    'onSelectionChange' is defined but never used                                                                                                                  no-unused-vars
+   115:5   error    'onDelete' is defined but never used                                                                                                                           no-unused-vars
+   135:44  error    'index' is defined but never used                                                                                                                              no-unused-vars
+   183:24  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   189:22  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   217:26  error    'setSelectedRows' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                no-unused-vars
+   309:35  error    'event' is defined but never used                                                                                                                              no-unused-vars
+   327:11  error    'handleContextMenu' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                              no-unused-vars
+   337:11  error    'handleActionButtonClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                        no-unused-vars
+   371:11  error    'handleEditClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                no-unused-vars
+   402:18  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   406:7   warning  React Hook useCallback has missing dependencies: 'setEditingData' and 'setEditingRow'. Either include them or remove the dependency array                      react-hooks/exhaustive-deps
+   423:16  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   426:8   warning  React Hook useCallback has missing dependencies: 'setEditingData' and 'setEditingRow'. Either include them or remove the dependency array                      react-hooks/exhaustive-deps
+   431:8   warning  React Hook useCallback has missing dependencies: 'setEditingData' and 'setEditingRow'. Either include them or remove the dependency array                      react-hooks/exhaustive-deps
+   471:11  error    'getActionIcon' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                  no-unused-vars
+   485:11  error    'getActionLabel' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                 no-unused-vars
+   504:18  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   677:8   warning  React Hook useMemo has missing dependencies: 'processedColumns', 'processedData', and 'renderActionsCell'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   679:11  error    'handleRowClick' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                 no-unused-vars
+   716:19  error    'handleRowSelection' is not defined                                                                                                                            no-undef
+   968:38  error    'error' is defined but never used                                                                                                                              no-unused-vars
+   986:36  error    'error' is defined but never used                                                                                                                              no-unused-vars
+  1114:37  error    'handleSelectAll' is not defined                                                                                                                               no-undef
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/common/ErrorBoundary.jsx
+   17:35  error  'error' is defined but never used  no-unused-vars
+  113:29  error  'process' is not defined           no-undef
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/common/SectionErrorBoundary.jsx
+  50:20  error  'process' is not defined  no-undef
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/common/TimePicker12.jsx
+   4:42  error  'placeholder' is assigned a value but never used  no-unused-vars
+  49:16  error  'error' is defined but never used                 no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/CustomizableDashboard.jsx
+   24:9   error    'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                            no-unused-vars
+  183:6   warning  React Hook useEffect has a missing dependency: 'defaultWidgets'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  280:11  error    'draggedWidget' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+  283:9   error    'calculateInsertionIndex' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  468:38  error    'widgetId' is defined but never used                                                                               no-unused-vars
+  472:14  error    'error' is defined but never used                                                                                  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/DashboardWidget.jsx
+   2:35  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                           no-unused-vars
+   9:3   error  'index' is defined but never used                                                                          no-unused-vars
+  14:3   error  'onMoveWidget' is defined but never used                                                                   no-unused-vars
+  15:3   error  'onSwapWidget' is defined but never used                                                                   no-unused-vars
+  16:3   error  'lastWidgetPosition' is defined but never used                                                             no-unused-vars
+  48:9   error  'handleDragHandleMouseDown' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/SimpleDragDrop.jsx
+   2:27  error    'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                            no-unused-vars
+  69:6   warning  React Hook useEffect has missing dependencies: 'handleDragEnd' and 'handleDragMove'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/SimpleDragSystem.jsx
+    2:27  error    'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                            no-unused-vars
+  168:9   error    'createSmartLayout' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                        no-unused-vars
+  172:11  error    'widgetWidth' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                              no-unused-vars
+  173:11  error    'widgetHeight' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                             no-unused-vars
+  230:9   error    'createNonOverlappingLayout' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                               no-unused-vars
+  402:6   warning  React Hook useEffect has missing dependencies: 'handleDragEnd' and 'handleDragMove'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/widgets/ChartWidget.jsx
+  32:50  error  'title' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/components/dashboard/widgets/TrendAnalysis.jsx
+  6:34  error  'data' is defined but never used                                                           no-unused-vars
+  7:93  error  'chartType' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/contexts/ThemeContext.jsx
+  5:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/redux/slices/hiringAgenciesSlice.js
+   8:32  error  'getState' is defined but never used                                                      no-unused-vars
+  11:13  error  'userData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/redux/slices/interviewSlotsSlice.js
+  33:48  error  'e' is defined but never used  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/redux/slices/jobsSlice.js
+  8:32  error  'dispatch' is defined but never used  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/redux/slices/searchSlice.js
+  9:13  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/home/mayur/Desktop/ai interview/aiinterviewerbackend/frontend/src/utils/errorReporting.js
+  31:9  error  'process' is not defined  no-undef
+
+✖ 186 problems (168 errors, 18 warnings)
+

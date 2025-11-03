@@ -59,8 +59,8 @@ Thumbs.db
 *.md
 !README.md
 
-# Exclude frontend as it has its own repository
-frontend/
+# Frontend is now part of this repository
+# frontend/ - removed to include frontend in main repo
 
 # Test files
 test_*.py
